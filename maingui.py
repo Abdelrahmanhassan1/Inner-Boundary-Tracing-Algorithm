@@ -35,6 +35,11 @@ class Ui_MainWindow(object):
         self.apply_button = QtWidgets.QPushButton(self.centralwidget)
         self.apply_button.setGeometry(QtCore.QRect(520, 110, 89, 25))
         self.apply_button.setObjectName("apply_button")
+        self.comboBox = QtWidgets.QComboBox(self.centralwidget)
+        self.comboBox.setGeometry(QtCore.QRect(630, 100, 151, 25))
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 22))
@@ -52,6 +57,8 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.browse_button.setText(_translate("MainWindow", "Browse"))
         self.apply_button.setText(_translate("MainWindow", "Apply"))
+        self.comboBox.setItemText(0, _translate("MainWindow", "4 connectivity"))
+        self.comboBox.setItemText(1, _translate("MainWindow", "8 connectivity"))
 
 
 if __name__ == "__main__":
