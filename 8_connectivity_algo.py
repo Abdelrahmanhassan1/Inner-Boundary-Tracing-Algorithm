@@ -3,20 +3,20 @@ import cv2
 import copy
 import numpy as np
 import matplotlib.pyplot as plt
-image = [
-    [0, 1, 1, 0, 0, 0, 0],
-    [1, 0, 0, 1, 1, 1, 1],
-    [1, 0, 1, 1, 1, 0, 1],
-    [1, 0, 0, 0, 1, 1, 1],
-    [1, 1, 0, 1, 0, 0, 0],
-    [0, 0, 1, 1, 0, 0, 0]
-]
-# image = cv2.imread("./image.png", 0)
-# rows, cols = image.shape
-rows = 6
-cols = 7
+# image = [
+#     [0, 1, 1, 0, 0, 0, 0],
+#     [1, 0, 0, 1, 1, 1, 1],
+#     [1, 0, 1, 1, 1, 0, 1],
+#     [1, 0, 0, 0, 1, 1, 1],
+#     [1, 1, 0, 1, 0, 0, 0],
+#     [0, 0, 1, 1, 0, 0, 0]
+# ]
+image = cv2.imread("./images/image 5.png", 0)
+rows, cols = image.shape
+# rows = 6
+# cols = 7
 
-new_image = np.zeros((6, 7), np.uint8)
+new_image = np.zeros(image.shape)
 dir = 7
 left_most_value = [0, 0]
 next_point = [0, 0]
@@ -26,7 +26,7 @@ boundary_points = []
 def find_left_most():
     for col in range(cols+1):
         for row in range(col+1):
-            if image[row][col-row] == 1:
+            if image[row][col-row] == 255:
                 left_most_value = [row, col - row]
                 boundary_points.append(left_most_value)
                 return left_most_value
@@ -52,7 +52,7 @@ while(True):
 
             if next_point[1] > cols - 1:
                 dir = (dir + 1) % 8
-            elif(image[next_point[0]][next_point[1]]) == 1:
+            elif(image[next_point[0]][next_point[1]]) == 255:
                 left_most_value = copy.deepcopy(next_point)
                 boundary_points.append(left_most_value)
                 break
@@ -66,7 +66,7 @@ while(True):
 
             if (next_point[1] > cols - 1) or (next_point[0] < 0):
                 dir = (dir + 1) % 8
-            elif(image[next_point[0]][next_point[1]]) == 1:
+            elif(image[next_point[0]][next_point[1]]) == 255:
                 left_most_value = copy.deepcopy(next_point)
                 boundary_points.append(left_most_value)
                 break
@@ -80,7 +80,7 @@ while(True):
 
             if next_point[0] < 0:
                 dir = (dir + 1) % 8
-            elif(image[next_point[0]][next_point[1]]) == 1:
+            elif(image[next_point[0]][next_point[1]]) == 255:
                 left_most_value = copy.deepcopy(next_point)
                 boundary_points.append(left_most_value)
                 break
@@ -93,7 +93,7 @@ while(True):
 
             if (next_point[0] < 0) or (next_point[1] < 0):
                 dir = (dir + 1) % 8
-            elif(image[next_point[0]][next_point[1]]) == 1:
+            elif(image[next_point[0]][next_point[1]]) == 255:
                 left_most_value = copy.deepcopy(next_point)
                 boundary_points.append(left_most_value)
                 break
@@ -108,7 +108,7 @@ while(True):
             if next_point[1] < 0:
                 dir = (dir + 1) % 8
 
-            elif(image[next_point[0]][next_point[1]]) == 1:
+            elif(image[next_point[0]][next_point[1]]) == 255:
                 left_most_value = copy.deepcopy(next_point)
                 boundary_points.append(left_most_value)
 
@@ -123,7 +123,7 @@ while(True):
             if (next_point[0] > rows - 1) or (next_point[1] < 0):
                 dir = (dir + 1) % 8
 
-            elif(image[next_point[0]][next_point[1]]) == 1:
+            elif(image[next_point[0]][next_point[1]]) == 255:
                 left_most_value = copy.deepcopy(next_point)
                 boundary_points.append(left_most_value)
 
@@ -139,7 +139,7 @@ while(True):
 
             if next_point[0] > rows - 1:
                 dir = (dir + 1) % 8
-            elif(image[next_point[0]][next_point[1]]) == 1:
+            elif(image[next_point[0]][next_point[1]]) == 255:
                 left_most_value = copy.deepcopy(next_point)
                 boundary_points.append(left_most_value)
                 break
@@ -152,7 +152,7 @@ while(True):
 
             if (next_point[0] > rows - 1) or (next_point[1] > cols - 1):
                 dir = (dir + 1) % 8
-            elif(image[next_point[0]][next_point[1]]) == 1:
+            elif(image[next_point[0]][next_point[1]]) == 255:
                 left_most_value = copy.deepcopy(next_point)
                 boundary_points.append(left_most_value)
                 break
@@ -165,9 +165,9 @@ while(True):
                 break
 
 
-# for boundary in boundary_points:
-#     new_image[boundary[0]][boundary[1]] = 255
+for boundary in boundary_points:
+    new_image[boundary[0]][boundary[1]] = 255
 
-print(boundary_points)
-# plt.imshow(new_image, cmap="gray")
-# plt.show()
+# print(boundary_points)
+plt.imshow(new_image, cmap="gray")
+plt.show()
