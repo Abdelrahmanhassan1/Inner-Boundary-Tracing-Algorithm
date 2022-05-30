@@ -7,7 +7,7 @@ import numpy as np
 import cv2
 import copy
 from matplotlib.figure import Figure
-from sympy import EX, false
+from sympy import EX
 from maingui import Ui_MainWindow
 
 
@@ -46,9 +46,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.rows, self.cols = self.image.shape
             self.show_image(self.original_image_figure,
                             self.original_canvas_figure, self.image)
-            self.final_image_figure.clear()
-            self.final_canvas_figure.draw()
-            self.final_canvas_figure.flush_events()
         except Exception as e:
             print(e)
 
@@ -62,28 +59,53 @@ class MainWindow(QtWidgets.QMainWindow):
                 row_left_most = self.left_most_value[0]
                 column_left_most = self.left_most_value[1]
                 self.dir = (self.dir + 3) % 4
-                self.flag_4 = True
-                while(self.flag_4):
+                while(True):
                     if self.dir == 0:
 
                         self.next_point[0] = row_left_most
                         self.next_point[1] = column_left_most + 1
 
-                        self.check_valid_image_bounadries(4)
+                        if self.next_point[1] > self.cols - 1:
+                            self.dir = (self.dir + 1) % 4
+                        elif(self.image[self.next_point[0]][self.next_point[1]]) == 255:
+                            self.left_most_value = copy.deepcopy(
+                                self.next_point)
+                            self.boundary_points.append(self.left_most_value)
+                            break
+                        else:
+                            self.dir = (self.dir + 1) % 4
 
                     elif self.dir == 1:
                         # go up
                         self.next_point[0] = row_left_most - 1
                         self.next_point[1] = column_left_most
 
-                        self.check_valid_image_bounadries(4)
+                        if self.next_point[0] < 0:
+                            self.dir = (self.dir + 1) % 4
+                        elif(self.image[self.next_point[0]][self.next_point[1]]) == 255:
+                            self.left_most_value = copy.deepcopy(
+                                self.next_point)
+                            self.boundary_points.append(self.left_most_value)
+                            break
+                        else:
+                            self.dir = (self.dir + 1) % 4
 
                     elif self.dir == 2:
                         # go left
                         self.next_point[0] = row_left_most
                         self.next_point[1] = column_left_most - 1
 
-                        self.check_valid_image_bounadries(4)
+                        if self.next_point[1] < 0:
+                            self.dir = (self.dir + 1) % 4
+
+                        elif(self.image[self.next_point[0]][self.next_point[1]]) == 255:
+                            self.left_most_value = copy.deepcopy(
+                                self.next_point)
+                            self.boundary_points.append(self.left_most_value)
+
+                            break
+                        else:
+                            self.dir = (self.dir + 1) % 4
 
                     elif self.dir == 3:
                         # go down
@@ -91,7 +113,15 @@ class MainWindow(QtWidgets.QMainWindow):
                         self.next_point[0] = row_left_most + 1
                         self.next_point[1] = column_left_most
 
-                        self.check_valid_image_bounadries(4)
+                        if self.next_point[0] > self.rows - 1:
+                            self.dir = (self.dir + 1) % 4
+                        elif(self.image[self.next_point[0]][self.next_point[1]]) == 255:
+                            self.left_most_value = copy.deepcopy(
+                                self.next_point)
+                            self.boundary_points.append(self.left_most_value)
+                            break
+                        else:
+                            self.dir = (self.dir + 1) % 4
 
                 if len(self.boundary_points) >= 4:
                     if self.boundary_points[-1] == self.boundary_points[1]:
@@ -123,48 +153,99 @@ class MainWindow(QtWidgets.QMainWindow):
                 else:
                     self.dir = (self.dir + 6) % 8
 
-                self.flag_8 = True
-                while(self.flag_8):
+                while(True):
 
                     if self.dir == 0:
                         # go right
                         self.next_point[0] = row_left_most
                         self.next_point[1] = column_left_most + 1
 
-                        self.check_valid_image_bounadries(8)
+                        if self.next_point[1] > self.cols - 1:
+                            self.dir = (self.dir + 1) % 8
+                        elif(self.image[self.next_point[0]][self.next_point[1]]) == 255:
+                            self.left_most_value = copy.deepcopy(
+                                self.next_point)
+                            self.boundary_points.append(self.left_most_value)
+                            break
+                        else:
+                            self.dir = (self.dir + 1) % 8
 
                     elif self.dir == 1:
 
                         self.next_point[0] = row_left_most - 1
                         self.next_point[1] = column_left_most + 1
 
-                        self.check_valid_image_bounadries(8)
+                        if (self.next_point[1] > self.cols - 1) or (self.next_point[0] < 0):
+                            self.dir = (self.dir + 1) % 8
+                        elif(self.image[self.next_point[0]][self.next_point[1]]) == 255:
+                            self.left_most_value = copy.deepcopy(
+                                self.next_point)
+                            self.boundary_points.append(self.left_most_value)
+                            break
+                        else:
+                            self.dir = (self.dir + 1) % 8
 
                     elif self.dir == 2:
                         # go up
                         self.next_point[0] = row_left_most - 1
                         self.next_point[1] = column_left_most
 
-                        self.check_valid_image_bounadries(8)
+                        if self.next_point[0] < 0:
+                            self.dir = (self.dir + 1) % 8
+                        elif(self.image[self.next_point[0]][self.next_point[1]]) == 255:
+                            self.left_most_value = copy.deepcopy(
+                                self.next_point)
+                            self.boundary_points.append(self.left_most_value)
+                            break
+                        else:
+                            self.dir = (self.dir + 1) % 8
 
                     elif self.dir == 3:
                         self.next_point[0] = row_left_most - 1
                         self.next_point[1] = column_left_most - 1
 
-                        self.check_valid_image_bounadries(8)
+                        if (self.next_point[0] < 0) or (self.next_point[1] < 0):
+                            self.dir = (self.dir + 1) % 8
+                        elif(self.image[self.next_point[0]][self.next_point[1]]) == 255:
+                            self.left_most_value = copy.deepcopy(
+                                self.next_point)
+                            self.boundary_points.append(self.left_most_value)
+                            break
+                        else:
+                            self.dir = (self.dir + 1) % 8
 
                     elif self.dir == 4:
                         # go left
                         self.next_point[0] = row_left_most
                         self.next_point[1] = column_left_most - 1
 
-                        self.check_valid_image_bounadries(8)
+                        if self.next_point[1] < 0:
+                            self.dir = (self.dir + 1) % 8
+
+                        elif(self.image[self.next_point[0]][self.next_point[1]]) == 255:
+                            self.left_most_value = copy.deepcopy(
+                                self.next_point)
+                            self.boundary_points.append(self.left_most_value)
+
+                            break
+                        else:
+                            self.dir = (self.dir + 1) % 8
 
                     elif self.dir == 5:
                         self.next_point[0] = row_left_most + 1
                         self.next_point[1] = column_left_most - 1
 
-                        self.check_valid_image_bounadries(8)
+                        if (self.next_point[0] > self.rows - 1) or (self.next_point[1] < 0):
+                            self.dir = (self.dir + 1) % 8
+
+                        elif(self.image[self.next_point[0]][self.next_point[1]]) == 255:
+                            self.left_most_value = copy.deepcopy(
+                                self.next_point)
+                            self.boundary_points.append(self.left_most_value)
+
+                            break
+                        else:
+                            self.dir = (self.dir + 1) % 8
 
                     elif self.dir == 6:
                         # go down
@@ -172,13 +253,29 @@ class MainWindow(QtWidgets.QMainWindow):
                         self.next_point[0] = row_left_most + 1
                         self.next_point[1] = column_left_most
 
-                        self.check_valid_image_bounadries(8)
+                        if self.next_point[0] > self.rows - 1:
+                            self.dir = (self.dir + 1) % 8
+                        elif(self.image[self.next_point[0]][self.next_point[1]]) == 255:
+                            self.left_most_value = copy.deepcopy(
+                                self.next_point)
+                            self.boundary_points.append(self.left_most_value)
+                            break
+                        else:
+                            self.dir = (self.dir + 1) % 8
 
                     elif self.dir == 7:
                         self.next_point[0] = row_left_most + 1
                         self.next_point[1] = column_left_most + 1
 
-                        self.check_valid_image_bounadries(8)
+                        if (self.next_point[0] > self.rows - 1) or (self.next_point[1] > self.cols - 1):
+                            self.dir = (self.dir + 1) % 8
+                        elif(self.image[self.next_point[0]][self.next_point[1]]) == 255:
+                            self.left_most_value = copy.deepcopy(
+                                self.next_point)
+                            self.boundary_points.append(self.left_most_value)
+                            break
+                        else:
+                            self.dir = (self.dir + 1) % 8
 
                 if len(self.boundary_points) >= 4:
                     if self.boundary_points[-1] == self.boundary_points[1]:
@@ -219,19 +316,6 @@ class MainWindow(QtWidgets.QMainWindow):
         figure.tight_layout(pad=1.0, w_pad=1.0, h_pad=1.0)
         canvas.draw()
         canvas.flush_events()
-
-    def check_valid_image_bounadries(self, connectivity):
-        # check if the next point is in the image frame
-        if (self.next_point[1] > self.cols - 1) or (self.next_point[0] < 0) or (self.next_point[1] < 0) or (self.next_point[0] > self.rows - 1):
-            self.dir = (self.dir + 1) % connectivity
-        elif(self.image[self.next_point[0]][self.next_point[1]]) == 255:
-            self.left_most_value = copy.deepcopy(
-                self.next_point)
-            self.boundary_points.append(self.left_most_value)
-            self.flag_8 = false
-            self.flag_4 = false
-        else:
-            self.dir = (self.dir + 1) % connectivity
 
 
 if __name__ == '__main__':
