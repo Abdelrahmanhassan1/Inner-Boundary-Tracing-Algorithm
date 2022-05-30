@@ -39,10 +39,11 @@ class MainWindow(QtWidgets.QMainWindow):
     def browse(self):
         try:
             imported_image = QFileDialog.getOpenFileName(
-                filter="image (*.png *.jbg *.jbeg)")[0]
+                filter="image (*.png *.jpg *.jpeg)")[0]
             self.image = cv2.imread(imported_image, 0)
+            ret, self.image = cv2.threshold(
+                self.image, 127, 255, cv2.THRESH_BINARY)
             self.rows, self.cols = self.image.shape
-            self.new_image = np.zeros(self.image.shape)
             self.show_original_image()
         except Exception as e:
             print(e)
@@ -50,6 +51,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def apply_algorithm_4_connectivity(self):
         try:
             self.boundary_points = []
+            self.new_image = np.zeros(self.image.shape)
             self.find_left_most()
             self.dir = 3
             while(True):
@@ -124,6 +126,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     if self.boundary_points[-1] == self.boundary_points[1]:
                         if self.boundary_points[-2] == self.boundary_points[0]:
                             break
+
             for boundary in self.boundary_points:
                 self.new_image[boundary[0]][boundary[1]] = 255
             self.show_final_image()
@@ -134,6 +137,7 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
 
             self.boundary_points = []
+            self.new_image = np.zeros(self.image.shape)
             self.find_left_most()
             self.dir = 7
 
@@ -312,6 +316,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def show_final_image(self):
         self.final_image_figure.clear()
         figure_axes = self.final_image_figure.gca()
+        figure_axes.cla()
         figure_axes.imshow(self.new_image, cmap='gray')
         figure_axes.set_xticks([])
         figure_axes.set_yticks([])
